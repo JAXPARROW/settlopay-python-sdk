@@ -1,0 +1,11 @@
+title = "settlopay-python-sdk gitleaks config"
+
+[extend]
+useDefault = true
+
+# Idempotency keys in docstrings/README examples ("withdrawal-397") are request
+# identifiers, not secrets. Only the exact `idempotency_key="..."` form is allowed.
+[[allowlists]]
+description = "Idempotency key examples"
+regexTarget = "line"
+regexes = ['''idempotency_key\s*=\s*["'][A-Za-z0-9._:-]{1,120}["']''']
