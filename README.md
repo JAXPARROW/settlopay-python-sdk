@@ -152,9 +152,12 @@ collection prompt to your own phone. Money only moves if you approve it.
 
 ### Releasing
 
-1. Bump `src/settlopay/_version.py`, update `CHANGELOG.md`, merge to `main`.
-2. Run the **Publish** workflow manually to upload to TestPyPI, then check the install.
-3. Tag `vX.Y.Z` and publish a GitHub Release. The workflow publishes to PyPI via
+Pushing commits only runs CI. A version is published when you push a tag:
+
+1. Bump `src/settlopay/_version.py` and update `CHANGELOG.md`, then commit and push.
+2. Optional dry run: Actions → **Publish** → *Run workflow* uploads to TestPyPI.
+3. Run `git tag vX.Y.Z && git push origin vX.Y.Z`. The **Publish** workflow
+   tests, checks that the tag matches the version, builds, and uploads to PyPI via
    Trusted Publishing (OIDC). No token is stored anywhere.
 
 ## License

@@ -1,20 +1,20 @@
 # Publishes to PyPI with Trusted Publishing (OIDC). No API tokens are stored anywhere.
 #
 # One-time setup (see README "Releasing"):
-#   1. PyPI -> Your projects -> Publishing -> add a *pending* trusted publisher:
-#        owner: JAXPARROW   repo: settlopay-python-sdk
-#        workflow: publish.yml   environment: pypi
-#   2. Same on TestPyPI with environment: testpypi
-#   3. GitHub -> Settings -> Environments: create "pypi" (add required reviewers)
-#      and "testpypi".
+#   PyPI -> Your projects -> settlo-pay-python-sdk -> Publishing -> add a trusted publisher:
+#     owner: JAXPARROW   repo: settlopay-python-sdk
+#     workflow: publish.yml   environment: pypi
+#   (Optional dry runs: same on TestPyPI with environment: testpypi.)
+#   GitHub creates the "pypi" environment on the first run.
 #
-# Release: bump src/settlopay/_version.py, tag vX.Y.Z, publish a GitHub Release.
+# Release: bump src/settlopay/_version.py, commit, then push a tag:
+#   git tag v0.1.1 && git push origin v0.1.1
 # Dry run: Actions -> Publish -> Run workflow (uploads to TestPyPI only).
 name: Publish
 
 on:
-  release:
-    types: [published]
+  push:
+    tags: ["v*"]
   workflow_dispatch:
 
 permissions: {}
@@ -39,9 +39,9 @@ jobs:
       - name: Run tests
         run: pytest -q
       - name: Check tag matches package version
-        if: github.event_name == 'release'
+        if: github.event_name == 'push'
         env:
-          TAG: ${{ github.event.release.tag_name }}
+          TAG: ${{ github.ref_name }}
         run: |
           VERSION=$(python -c "import settlopay; print(settlopay.__version__)")
           if [ "${TAG#v}" != "$VERSION" ]; then
@@ -79,7 +79,7 @@ jobs:
 
   publish-pypi:
     name: Publish to PyPI
-    if: github.event_name == 'release'
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     environment:
