@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-10-25
+
+### Changed
+- Releases are now published by pushing a `vX.Y.Z` tag, via PyPI Trusted Publishing.
+- The PyPI publish action is pinned to its release commit rather than the tag object.
+- README: updated release instructions.
+
 ## [0.1.0] - 2026-10-25
 
 ### Added
